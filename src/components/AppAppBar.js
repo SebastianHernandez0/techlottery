@@ -83,11 +83,11 @@ export default function AppAppBar() {
               alignItems: 'center',
             }}
           >
-            <Button color="primary" variant="text" size="small">
-              Sign in
+            <Button color="primary" variant="text" size="small" onClick={()=> navigate('/signin')}>
+              Iniciar sesión
             </Button>
             <Button onClick={()=> navigate('/signup')} color="primary" variant="contained" size="small">
-              Sign up
+              Registrarse
             </Button>
             <ColorModeIconDropdown />
           </Box>

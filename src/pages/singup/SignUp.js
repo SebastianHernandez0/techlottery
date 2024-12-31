@@ -16,7 +16,9 @@ import { styled } from '@mui/material/styles';
 import AppTheme from '../../shared-theme/AppTheme';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from '../../sign-up/CustomIcons';
 import ColorModeSelect from '../../shared-theme/ColorModeSelect';
-
+import {useNavigate} from 'react-router-dom';
+import { IconButton, InputAdornment } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
@@ -66,17 +68,32 @@ export default function SignUp(props) {
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
   const [nameError, setNameError] = React.useState(false);
   const [nameErrorMessage, setNameErrorMessage] = React.useState('');
+  const [telefonoError, setTelefonoError] = React.useState(false);
+  const [telefonoErrorMessage, setTelefonoErrorMessage] = React.useState('');
+  const [nombre, setNombre]= React.useState('');
+  const [correo, setCorreo]= React.useState('');
+  const [password, setPassword]= React.useState('');
+  const [telefono, setTelefono]= React.useState('');
+  const [instagram, setInstagram]= React.useState('');
+  const [generalErrorMessage, setGeneralErrorMessage] = React.useState('');
+  const [showPassword, setShowPassword] = React.useState(false);
+  const Navigate= useNavigate();
 
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const handleMouseDownPassword = (event) => event.preventDefault();
+  
   const validateInputs = () => {
     const email = document.getElementById('email');
     const password = document.getElementById('password');
     const name = document.getElementById('name');
+    const tel= document.getElementById('tel');
+  
 
     let isValid = true;
 
     if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
       setEmailError(true);
-      setEmailErrorMessage('Please enter a valid email address.');
+      setEmailErrorMessage('Ingrese un correo valido.');
       isValid = false;
     } else {
       setEmailError(false);
@@ -85,7 +102,7 @@ export default function SignUp(props) {
 
     if (!password.value || password.value.length < 6) {
       setPasswordError(true);
-      setPasswordErrorMessage('Password must be at least 6 characters long.');
+      setPasswordErrorMessage('La contraseña debe tener al menos 6 caracteres.');
       isValid = false;
     } else {
       setPasswordError(false);
@@ -94,43 +111,93 @@ export default function SignUp(props) {
 
     if (!name.value || name.value.length < 1) {
       setNameError(true);
-      setNameErrorMessage('Name is required.');
+      setNameErrorMessage('El nombre es requerido');
       isValid = false;
     } else {
-      setNameError(false);
+      setNameError(false); 
       setNameErrorMessage('');
+    }
+    if (!tel.value || tel.value.length < 9 || tel.value.length > 9) {
+      console.log(tel.value.length);
+      setTelefonoError(true);
+      setTelefonoErrorMessage('El telefono debe ser de 8 digitos.');
+      isValid = false;
+    }else{
+      setTelefonoError(false);
+      setTelefonoErrorMessage('');
     }
 
     return isValid;
   };
 
-  const handleSubmit = (event) => {
-    if (nameError || emailError || passwordError) {
+
+  const handleSubmit = async (event) => {
       event.preventDefault();
-      return;
-    }
-    const data = new FormData(event.currentTarget);
-    console.log({
-      name: data.get('name'),
-      lastName: data.get('lastName'),
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+      if (!validateInputs()) {
+        return;
+      }
+    const userData = {
+      nombre,
+      correo,
+      password,
+      telefono: parseInt(telefono,10),
+      instagram,
+    };
+    console.log("Sending data: ", userData);
+    try{
+      const response= await fetch('https://localhost:7262/api/Usuarios/Register',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      })
+      if(response.ok){
+        const data= await response.json();
+        alert('Usuario registrado con exito',data)  
+        setGeneralErrorMessage('');
+        Navigate('/')
+        
+      }else{
+        const error= await response.text();
+        let errorMessage= "Error al registrar usuario: ";
+        try {
+          const errorJson= JSON.parse(error);
+          console.log("Error json: ", errorJson.errors[0].errorMessage);
+          return setGeneralErrorMessage(errorJson.errors[0].errorMessage);
+          
+        } catch (error) {
+          console.log("Error parsing error: ", error);
+        }
+        setGeneralErrorMessage(error);
+        console.log("Error response: ", error);
+
+        
+      }
+    }catch(error){
+      alert('Error: '+ error.message);
+      console.log("Catch error: ", error);
+
   };
+};
 
   return (
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
+      <div>
       <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
+     
+      </div>
+      
       <SignUpContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
-          <SitemarkIcon />
+          
           <Typography
             component="h1"
             variant="h4"
             sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
           >
-            Sign up
+            Registrate
           </Typography>
           <Box
             component="form"
@@ -138,10 +205,12 @@ export default function SignUp(props) {
             sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
           >
             <FormControl>
-              <FormLabel htmlFor="name">Full name</FormLabel>
+              <FormLabel htmlFor="name">Nombre</FormLabel>
               <TextField
                 autoComplete="name"
                 name="name"
+                value={nombre}
+                onChange={(e)=> setNombre(e.target.value)}
                 required
                 fullWidth
                 id="name"
@@ -152,8 +221,10 @@ export default function SignUp(props) {
               />
             </FormControl>
             <FormControl>
-              <FormLabel htmlFor="email">Email</FormLabel>
+              <FormLabel htmlFor="email">Correo</FormLabel>
               <TextField
+                value={correo}
+                onChange={(e)=> setCorreo(e.target.value)}
                 required
                 fullWidth
                 id="email"
@@ -167,25 +238,72 @@ export default function SignUp(props) {
               />
             </FormControl>
             <FormControl>
-              <FormLabel htmlFor="password">Password</FormLabel>
+              <FormLabel htmlFor="password">Contraseña</FormLabel>
               <TextField
+                value={password}
+                onChange={(e)=> setPassword(e.target.value)}
                 required
                 fullWidth
                 name="password"
                 placeholder="••••••"
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 id="password"
                 autoComplete="new-password"
                 variant="outlined"
                 error={passwordError}
                 helperText={passwordErrorMessage}
                 color={passwordError ? 'error' : 'primary'}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
             </FormControl>
-            <FormControlLabel
-              control={<Checkbox value="allowExtraEmails" color="primary" />}
-              label="I want to receive updates via email."
-            />
+            <FormControl>
+              <FormLabel htmlFor="telefono">Telefono</FormLabel>
+              <div style={{display:'flex', gap: 5, alignItems: 'center'}}>
+                <p>+56</p>
+                <TextField
+                value={telefono}
+                onChange={(e)=> setTelefono(e.target.value)}
+                required
+                fullWidth
+                name="tel"
+                placeholder="12345678"
+                type='number'
+                id="tel"
+                autoComplete="new-password"
+                variant="outlined"
+                error={telefonoError}
+                helperText={telefonoErrorMessage}
+                color={telefonoError ? 'error' : 'primary'}
+              />
+              </div>
+              
+            </FormControl>
+            <FormControl>
+              <FormLabel htmlFor="instagram">Instagram  (No es necesario)</FormLabel>
+              <TextField
+                value={instagram}
+                onChange={(e)=> setInstagram(e.target.value)}
+                fullWidth
+                name="instagram"
+                placeholder="InserteIgcuandolohagamos"
+                type="text"
+                autoComplete="new-password"
+                variant="outlined"
+              />
+            </FormControl>
             <Button
               type="submit"
               fullWidth
@@ -193,19 +311,25 @@ export default function SignUp(props) {
               onClick={validateInputs}
             >
               Sign up
+              
             </Button>
+            {generalErrorMessage && (
+              <Typography color="error" sx={{ textAlign: 'center' }}>
+                {generalErrorMessage}
+              </Typography>
+            )}
           </Box>
           <Divider>
-            <Typography sx={{ color: 'text.secondary' }}>or</Typography>
+            
           </Divider>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Button
+            {/* <Button
               fullWidth
               variant="outlined"
               onClick={() => alert('Sign up with Google')}
               startIcon={<GoogleIcon />}
             >
-              Sign up with Google
+              Registrate con Google
             </Button>
             <Button
               fullWidth
@@ -213,17 +337,30 @@ export default function SignUp(props) {
               onClick={() => alert('Sign up with Facebook')}
               startIcon={<FacebookIcon />}
             >
-              Sign up with Facebook
-            </Button>
+              Registrate con Facebook
+            </Button> */}
             <Typography sx={{ textAlign: 'center' }}>
-              Already have an account?{' '}
+              Ya tienes una cuenta?{' '}
               <Link
-                href="/material-ui/getting-started/templates/sign-in/"
+                href="/signin"
                 variant="body2"
                 sx={{ alignSelf: 'center' }}
               >
-                Sign in
+                Inicia Sesión
+               
               </Link>
+              
+              <br></br>
+              <Link
+              style={{marginTop: '2rem'}}
+                href="/"
+                variant="body2"
+                sx={{ alignSelf: 'center' }}
+              >
+                Volver
+               
+              </Link>
+              
             </Typography>
           </Box>
         </Card>
