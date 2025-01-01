@@ -94,6 +94,7 @@ export default function SignIn(props) {
     if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
       setEmailError(true);
       setEmailErrorMessage('Please enter a valid email address.');
+      setGeneralErrorMessage("")
       isValid = false;
     } else {
       setEmailError(false);
@@ -103,6 +104,7 @@ export default function SignIn(props) {
     if (!password.value || password.value.length < 6) {
       setPasswordError(true);
       setPasswordErrorMessage('Password must be at least 6 characters long.');
+      setGeneralErrorMessage("")
       isValid = false;
     } else {
       setPasswordError(false);
@@ -140,7 +142,7 @@ export default function SignIn(props) {
       const token= await response.text();
       localStorage.setItem('token', token);
       
-      alert('Inicio de sesion exitoso');
+      
       setGeneralErrorMessage('');
       navigate('/');
     }else{
@@ -156,7 +158,7 @@ export default function SignIn(props) {
       } catch (error) {
         console.log('Error parsing error message:', error);
       }
-      setGeneralErrorMessage(errorMessage);
+      setGeneralErrorMessage(errorMessage + ": " + errorText);
       console.log('Error:', errorText);
     }
   } catch (error) {
