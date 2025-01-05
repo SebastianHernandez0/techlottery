@@ -22,6 +22,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import AppAppBar from '../../components/AppAppBar';
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
@@ -75,7 +76,7 @@ export default function SignIn(props) {
   const [password, setPassword] = React.useState('');
   const [generalErrorMessage, setGeneralErrorMessage] = React.useState('');
   const [showPassword, setShowPassword] = React.useState(false); //
-
+  const [rol, setRol] = React.useState(''); //
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -139,10 +140,12 @@ export default function SignIn(props) {
       body: JSON.stringify(userData)
     });
     if(response.ok){
-      const token= await response.text();
-      localStorage.setItem('token', token);
+      const token= await response.json();
       
+      localStorage.setItem('token', token.token);
       
+      setRol(token.rol);
+      localStorage.setItem('rol', token.rol);
       setGeneralErrorMessage('');
       navigate('/');
     }else{
@@ -174,8 +177,9 @@ export default function SignIn(props) {
   return (
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
+      <AppAppBar />
       <SignInContainer direction="column" justifyContent="space-between">
-        <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
+        {/* <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} /> */}
         <Card variant="outlined">
           {/* <SitemarkIcon /> Icono */}
           <Typography

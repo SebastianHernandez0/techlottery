@@ -12,14 +12,14 @@ import FAQ from '../../components/FAQ';
 import Footer from '../../components/Footer';
 import AppTheme from '../../shared-theme/AppTheme';
 
-export default function MarketingPage(props) {
+export default function Home(props) {
   return (
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
       <AppAppBar />
-      <Hero />
+      
       <div>
-        <LogoCollection />
+        
         <Features />
         <Divider />
         <Testimonials />

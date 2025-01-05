@@ -33,12 +33,31 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 
 export default function AppAppBar() {
   const [open, setOpen] = React.useState(false);
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  const navigate = useNavigate();
+  
+  const rol = localStorage.getItem('rol');
+  
+  React.useEffect(()=>{
+    const token = localStorage.getItem('token');
+    if(token){
+      setIsAuthenticated(true);
+      // console.log(token);
+    }
+  })
+
+  const handleLogout= ()=>{
+    localStorage.removeItem('token');
+    localStorage.removeItem('rol');
+    setIsAuthenticated(false);
+    navigate('/');
+  }
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
 
-  const navigate = useNavigate();
+ 
 
   return (
     <AppBar
@@ -54,10 +73,10 @@ export default function AppAppBar() {
       <Container maxWidth="lg">
         <StyledToolbar variant="dense" disableGutters>
           <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', px: 0 }}>
-            <Sitemark />
+            <Button variant='contained' color='info' href='/'>*Inserte Nombre de la App</Button>
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-              <Button variant="text" color="info" size="small">
-                Features
+              <Button href='/rifas' variant="text" color="info" size="small">
+                Rifas
               </Button>
               <Button variant="text" color="info" size="small">
                 Testimonials
@@ -81,12 +100,26 @@ export default function AppAppBar() {
               alignItems: 'center',
             }}
           >
-            <Button color="primary" variant="text" size="small" onClick={()=> navigate('/signin')}>
+            
+            {isAuthenticated ? (
+              <>
+              {rol === 'Admin' && (
+                <Button color='primary' size='small' variant='contained' onClick={()=> navigate('/admin')}>Gestionar Sorteos</Button>
+              )}
+              <Button color='inherit' size='small' variant='text' >Mi cuenta</Button>
+              <Button color='primary' size='small' variant='contained' onClick={handleLogout}>Salir</Button>
+              </>
+            ):(
+              <>
+              <Button color="primary" variant="text" size="small" onClick={()=> navigate('/signin')}>
               Iniciar sesión
             </Button>
             <Button onClick={()=> navigate('/signup')} color="primary" variant="contained" size="small">
               Registrarse
             </Button>
+              </>
+            )}
+            
             <ColorModeIconDropdown />
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' }, gap: 1 }}>

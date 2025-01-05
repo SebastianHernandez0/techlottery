@@ -6,6 +6,7 @@ import Card from '@mui/material/Card';
 import MuiChip from '@mui/material/Chip';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
+import AddIcon from '@mui/icons-material/Add';
 
 import { styled } from '@mui/material/styles';
 
@@ -15,10 +16,10 @@ import ViewQuiltRoundedIcon from '@mui/icons-material/ViewQuiltRounded';
 
 const items = [
   {
-    icon: <ViewQuiltRoundedIcon />,
-    title: 'Dashboard',
+    icon: <AddIcon />,
+    title: 'Agregar Sorteos',
     description:
-      'This item could provide a snapshot of the most important metrics or data points related to the product.',
+      'Agrega sorteos a la plataforma para que los usuarios puedan participar.',
     imageLight: `url("${process.env.TEMPLATE_IMAGE_URL || 'https://mui.com'}/static/images/templates/templates-images/dash-light.png")`,
     imageDark: `url("${process.env.TEMPLATE_IMAGE_URL || 'https://mui.com'}/static/images/templates/templates-images/dash-dark.png")`,
   },
@@ -147,22 +148,7 @@ export default function Features() {
   return (
     <Container id="features" sx={{ py: { xs: 8, sm: 16 } }}>
       <Box sx={{ width: { sm: '100%', md: '60%' } }}>
-        <Typography
-          component="h2"
-          variant="h4"
-          gutterBottom
-          sx={{ color: 'text.primary' }}
-        >
-          Product features
-        </Typography>
-        <Typography
-          variant="body1"
-          sx={{ color: 'text.secondary', mb: { xs: 2, sm: 4 } }}
-        >
-          Provide a brief overview of the key features of the product. For example,
-          you could list the number of features, their types or benefits, and
-          add-ons.
-        </Typography>
+       
       </Box>
       <Box
         sx={{
@@ -219,7 +205,7 @@ export default function Features() {
                   {icon}
 
                   <Typography variant="h6">{title}</Typography>
-                  <Typography variant="body2">{description}</Typography>
+                  
                 </Box>
               </Box>
             ))}
