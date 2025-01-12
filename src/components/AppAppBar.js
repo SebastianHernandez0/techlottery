@@ -11,9 +11,9 @@ import MenuItem from '@mui/material/MenuItem';
 import Drawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import Sitemark from './SitemarkIcon';
 import ColorModeIconDropdown from '../shared-theme/ColorModeIconDropdown';
 import { useNavigate } from 'react-router-dom';
+import { ShoppingCart } from '@mui/icons-material';
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   display: 'flex',
@@ -78,15 +78,7 @@ export default function AppAppBar() {
               <Button href='/rifas' variant="text" color="info" size="small">
                 Rifas
               </Button>
-              <Button variant="text" color="info" size="small">
-                Testimonials
-              </Button>
-              <Button variant="text" color="info" size="small">
-                Highlights
-              </Button>
-              <Button variant="text" color="info" size="small">
-                Pricing
-              </Button>
+              
               <Button variant="text" color="info" size="small" sx={{ minWidth: 0 }}>
                 FAQ
               </Button>
@@ -106,6 +98,9 @@ export default function AppAppBar() {
               {rol === 'Admin' && (
                 <Button color='primary' size='small' variant='contained' onClick={()=> navigate('/admin')}>Gestionar Sorteos</Button>
               )}
+              <IconButton color="inherit" onClick={() => navigate('/cart')}>
+                <ShoppingCart />
+              </IconButton>
               <Button color='inherit' size='small' variant='text' >Mi cuenta</Button>
               <Button color='primary' size='small' variant='contained' onClick={handleLogout}>Salir</Button>
               </>

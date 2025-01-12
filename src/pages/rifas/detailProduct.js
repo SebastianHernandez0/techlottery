@@ -1,12 +1,14 @@
 import * as React from "react";
 import { useParams } from "react-router-dom";
-import { Container, Typography, Box } from "@mui/material";
+import { Container, Typography, Box, Button } from "@mui/material";
 import AppTheme from "../../shared-theme/AppTheme";
 import AppAppBar from "../../components/AppAppBar";
+import { useCart } from "../../context/CartContext";
 
 export default function ProductDetail() {
   const { sorteoId } = useParams();
   const [product, setProduct] = React.useState(null);
+  const { addToCart } = useCart();
 
   React.useEffect(() => {
     const fetchProduct = async () => {
@@ -27,6 +29,12 @@ export default function ProductDetail() {
   if (!product) {
     return <Typography>Cargando...</Typography>;
   }
+
+  const handleAddToCart = () => {
+    addToCart(product);
+    console.log("Product added to cart:", product);
+   
+  };
 
   return (
     <>
@@ -64,6 +72,13 @@ export default function ProductDetail() {
               <Typography variant="h5" color="text.primary">
                 Precio: ${product.precioBoletos}
               </Typography>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleAddToCart}
+              >
+                Comprar
+              </Button>
             </div>
           </Box>
         </Container>

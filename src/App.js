@@ -7,9 +7,12 @@ import {Route,Routes} from 'react-router-dom';
 import ProductDetail from './pages/rifas/detailProduct';
 import AdminSorteos from './pages/admin/adminSorteos';
 import AddSorteos from './pages/admin/addSorteo';
+import { CartProvider } from './context/CartContext';
+import Cart from './pages/cart/Cart';
 function App() {
   return (
     <div className="App">
+      <CartProvider>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignUp />} />
@@ -18,8 +21,10 @@ function App() {
         <Route path="/rifas/:sorteoId" element={<ProductDetail />} />
         <Route path="/admin" element={<AdminSorteos />} />
         <Route path="/admin/agregarSorteo" element={<AddSorteos />} />
+        <Route path="/cart" element={<Cart />} />
         
       </Routes>
+      </CartProvider>
     </div>
   );
 }
