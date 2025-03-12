@@ -19,6 +19,7 @@ import ColorModeSelect from '../../shared-theme/ColorModeSelect';
 import {useNavigate} from 'react-router-dom';
 import { IconButton, InputAdornment } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import AppAppBar from '../../components/AppAppBar';
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
@@ -183,6 +184,7 @@ export default function SignUp(props) {
 
   return (
     <AppTheme {...props}>
+      <AppAppBar />
       <CssBaseline enableColorScheme />
       <div>
       <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />

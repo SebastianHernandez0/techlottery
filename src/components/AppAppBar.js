@@ -14,6 +14,8 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import ColorModeIconDropdown from '../shared-theme/ColorModeIconDropdown';
 import { useNavigate } from 'react-router-dom';
 import { ShoppingCart } from '@mui/icons-material';
+import { useCart } from '../context/CartContext';
+import { Badge } from '@mui/material';
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   display: 'flex',
@@ -35,6 +37,7 @@ export default function AppAppBar() {
   const [open, setOpen] = React.useState(false);
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const navigate = useNavigate();
+  const { cart } = useCart();
   
   const rol = localStorage.getItem('rol');
   
@@ -99,6 +102,7 @@ export default function AppAppBar() {
                 <Button color='primary' size='small' variant='contained' onClick={()=> navigate('/admin')}>Gestionar Sorteos</Button>
               )}
               <IconButton color="inherit" onClick={() => navigate('/cart')}>
+                <Badge badgeContent={cart.length} color='secondary'></Badge>
                 <ShoppingCart />
               </IconButton>
               <Button color='inherit' size='small' variant='text' >Mi cuenta</Button>

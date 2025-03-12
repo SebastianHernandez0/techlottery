@@ -1,17 +1,21 @@
 import * as React from 'react';
-import { Container, Typography, Box, Button, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton } from '@mui/material';
+import { Container, Typography, Box, Button, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, ListItemAvatar, Avatar, Divider} from '@mui/material';
 import { useCart } from '../../context/CartContext';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AppAppBar from '../../components/AppAppBar';
 import AppTheme from '../../shared-theme/AppTheme';
 import CssBaseline from '@mui/material/CssBaseline';
-import { props } from '../../shared-theme/AppTheme';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import { useNavigate } from 'react-router-dom';
+
 
 
 
 
 export default function Cart(props) {
-  const { cart, removeFromCart, clearCart } = useCart();
+  const { cart, removeFromCart, clearCart, updateQuantity } = useCart();
+  const Navigate = useNavigate();
 
   const handleRemoveFromCart = (index) => {
     removeFromCart(index);
@@ -20,6 +24,21 @@ export default function Cart(props) {
   const handleClearCart = () => {
     clearCart();
   };
+
+  const handleIncreaseQuantity = (productId) => {
+    updateQuantity(productId, 1);
+   
+  }
+
+  const handleDecreaseQuantity = (productId) => {
+    updateQuantity(productId, -1);
+  }
+
+  const total= cart.reduce((acc, product) => acc + product.precioBoletos * product.quantity , 0);
+  
+  const handleCheckout= ()=>{
+    Navigate('/pago');
+  }
 
   return (
     <AppTheme {...props}>
@@ -38,26 +57,44 @@ export default function Cart(props) {
         ) : (
           <List>
             {cart.map((product, index) => (
-              <ListItem key={product.id}>
+              <React.Fragment key={product.id}>
+              <ListItem>
+                <ListItemAvatar>
+                  <Avatar src={product.imagen} ></Avatar>
+                </ListItemAvatar> 
                 <ListItemText
                   primary={product.nombre}
-                  secondary={`Precio: $${product.precioBoletos}`}
+                  secondary={`Precio: $${product.precioBoletos} x ${product.quantity}`}
                 />
-                <ListItemSecondaryAction>
+                <ListItemSecondaryAction style={{display: 'flex', flexDirection: 'row', gap: 20}}>
+                <IconButton edge="end" aria-label="remove" onClick={() => handleDecreaseQuantity(product.sorteoId)}>
+                        <RemoveIcon />
+                      </IconButton>
+                      <IconButton edge="end" aria-label="add" onClick={() => handleIncreaseQuantity(product.sorteoId)}>
+                        <AddIcon />
+                      </IconButton>
                   <IconButton edge="end" aria-label="delete" onClick={() => handleRemoveFromCart(index)}>
                     <DeleteIcon />
                   </IconButton>
                 </ListItemSecondaryAction>
+                
               </ListItem>
+              <Divider variant="inset" component="li" />
+              </React.Fragment>
+              
             ))}
+            
           </List>
         )}
         {cart.length > 0 && (
           <Box sx={{ mt: 2 }}>
+            <Typography variant="h6" component="div" gutterBottom>
+                Total: ${total}
+              </Typography>
             <Button variant="contained" color="primary" onClick={handleClearCart}>
               Vaciar Carrito
             </Button>
-            <Button variant="contained" color="secondary" sx={{ ml: 2 }}>
+            <Button variant="contained" color="secondary" sx={{ ml: 2 }} onClick={handleCheckout}>
               Comprar
             </Button>
           </Box>

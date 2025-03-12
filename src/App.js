@@ -9,6 +9,7 @@ import AdminSorteos from './pages/admin/adminSorteos';
 import AddSorteos from './pages/admin/addSorteo';
 import { CartProvider } from './context/CartContext';
 import Cart from './pages/cart/Cart';
+import Pago from './pages/pagos/Pago';
 function App() {
   return (
     <div className="App">
@@ -22,6 +23,7 @@ function App() {
         <Route path="/admin" element={<AdminSorteos />} />
         <Route path="/admin/agregarSorteo" element={<AddSorteos />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/pago" element={<Pago />} />
         
       </Routes>
       </CartProvider>
