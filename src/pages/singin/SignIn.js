@@ -146,6 +146,8 @@ export default function SignIn(props) {
       
       setRol(token.rol);
       localStorage.setItem('rol', token.rol);
+      localStorage.setItem('userId', token.userId);
+      console.log(token)
       setGeneralErrorMessage('');
       navigate('/');
     }else{
